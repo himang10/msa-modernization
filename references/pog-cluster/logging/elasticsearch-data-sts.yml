@@ -1,0 +1,155 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1beta1","kind":"StatefulSet","metadata":{"annotations":{},"labels":{"app":"elasticsearch","component":"elasticsearch","role":"data"},"name":"elasticsearch-data","namespace":"zcp-system"},"spec":{"podManagementPolicy":"Parallel","replicas":3,"serviceName":"elasticsearch-data","template":{"metadata":{"labels":{"app":"elasticsearch","component":"elasticsearch","role":"data"}},"spec":{"affinity":{"nodeAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":{"nodeSelectorTerms":[{"matchExpressions":[{"key":"beta.kubernetes.io/arch","operator":"In","values":["amd64"]},{"key":"role","operator":"In","values":["logging"]}]}]}}},"containers":[{"env":[{"name":"ES_JAVA_OPTS","value":"-Xms4096m -Xmx4096m"}],"image":"registry.au-syd.bluemix.net/cloudzcp/elasticsearch:6.3.1","imagePullPolicy":"IfNotPresent","name":"es-data","ports":[{"containerPort":9300,"name":"transport","protocol":"TCP"}],"resources":{"limits":{"memory":"8192M"}},"securityContext":{"capabilities":{"add":["IPC_LOCK"]},"privileged":false},"volumeMounts":[{"mountPath":"/usr/share/elasticsearch/data","name":"elasticsearch-data"},{"mountPath":"/usr/share/elasticsearch/config/elasticsearch.yml","name":"elasticsearch-conf","subPath":"elasticsearch.yml"}]}],"initContainers":[{"command":["chmod","777","/data-dir"],"image":"registry.au-syd.bluemix.net/cloudzcp/elasticsearch:6.3.1","imagePullPolicy":"IfNotPresent","name":"chmod","securityContext":{"privileged":true},"volumeMounts":[{"mountPath":"/data-dir","name":"elasticsearch-data"}]},{"command":["sysctl","-w","vm.max_map_count=262144"],"image":"registry.au-syd.bluemix.net/cloudzcp/elasticsearch:6.3.1","imagePullPolicy":"IfNotPresent","name":"sysctl","securityContext":{"privileged":true}}],"restartPolicy":"Always","securityContext":{"fsGroup":1000},"serviceAccountName":"zcp-system-admin","tolerations":[{"effect":"NoSchedule","key":"logging","operator":"Equal","value":"true"}],"volumes":[{"configMap":{"items":[{"key":"data.yml","path":"elasticsearch.yml"}],"name":"es-configmap"},"name":"elasticsearch-conf"}]}},"updateStrategy":{"type":"RollingUpdate"},"volumeClaimTemplates":[{"metadata":{"annotations":{"volume.beta.kubernetes.io/storage-class":"ibmc-block-retain-silver"},"labels":{"app":"elasticsearch","component":"elasticsearch","namespace":"zcp-system"},"name":"elasticsearch-data"},"spec":{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"200Gi"}},"storageClassName":"ibmc-block-retain-silever"}}]}}
+  creationTimestamp: 2020-03-30T01:45:53Z
+  generation: 2
+  labels:
+    app: elasticsearch
+    component: elasticsearch
+    role: data
+  name: elasticsearch-data
+  namespace: zcp-system
+  resourceVersion: "122915698"
+  selfLink: /apis/apps/v1/namespaces/zcp-system/statefulsets/elasticsearch-data
+  uid: f1678dd5-70a3-4038-8abe-205a49082b68
+spec:
+  podManagementPolicy: Parallel
+  replicas: 3
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: elasticsearch
+      component: elasticsearch
+      role: data
+  serviceName: elasticsearch-data
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: elasticsearch
+        component: elasticsearch
+        role: data
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: beta.kubernetes.io/arch
+                operator: In
+                values:
+                - amd64
+              - key: role
+                operator: In
+                values:
+                - logging
+      containers:
+      - env:
+        - name: ES_JAVA_OPTS
+          value: -Xms4096m -Xmx4096m
+        image: registry.au-syd.bluemix.net/cloudzcp/elasticsearch:6.3.1
+        imagePullPolicy: IfNotPresent
+        name: es-data
+        ports:
+        - containerPort: 9300
+          name: transport
+          protocol: TCP
+        resources:
+          limits:
+            memory: 8192M
+        securityContext:
+          capabilities:
+            add:
+            - IPC_LOCK
+          privileged: false
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /usr/share/elasticsearch/data
+          name: elasticsearch-data
+        - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
+          name: elasticsearch-conf
+          subPath: elasticsearch.yml
+      dnsPolicy: ClusterFirst
+      initContainers:
+      - command:
+        - chmod
+        - "777"
+        - /data-dir
+        image: registry.au-syd.bluemix.net/cloudzcp/elasticsearch:6.3.1
+        imagePullPolicy: IfNotPresent
+        name: chmod
+        resources: {}
+        securityContext:
+          privileged: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /data-dir
+          name: elasticsearch-data
+      - command:
+        - sysctl
+        - -w
+        - vm.max_map_count=262144
+        image: registry.au-syd.bluemix.net/cloudzcp/elasticsearch:6.3.1
+        imagePullPolicy: IfNotPresent
+        name: sysctl
+        resources: {}
+        securityContext:
+          privileged: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: 1000
+      serviceAccount: zcp-system-admin
+      serviceAccountName: zcp-system-admin
+      terminationGracePeriodSeconds: 30
+      tolerations:
+      - effect: NoSchedule
+        key: logging
+        operator: Equal
+        value: "true"
+      volumes:
+      - configMap:
+          defaultMode: 420
+          items:
+          - key: data.yml
+            path: elasticsearch.yml
+          name: es-configmap
+        name: elasticsearch-conf
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - metadata:
+      annotations:
+        volume.beta.kubernetes.io/storage-class: ibmc-block-retain-silver
+      creationTimestamp: null
+      labels:
+        app: elasticsearch
+        component: elasticsearch
+        namespace: zcp-system
+      name: elasticsearch-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 200Gi
+      storageClassName: ibmc-block-retain-silever
+      volumeMode: Filesystem
+    status:
+      phase: Pending
+status:
+  collisionCount: 0
+  currentReplicas: 3
+  currentRevision: elasticsearch-data-79f6655dd6
+  observedGeneration: 2
+  readyReplicas: 3
+  replicas: 3
+  updateRevision: elasticsearch-data-79f6655dd6
+  updatedReplicas: 3

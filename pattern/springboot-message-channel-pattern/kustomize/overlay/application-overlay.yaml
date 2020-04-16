@@ -1,0 +1,10 @@
+# 플랫폼 제공
+domain:
+  group: awesome
+
+spring:
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: labs
+    password: awesome-rabbitmq

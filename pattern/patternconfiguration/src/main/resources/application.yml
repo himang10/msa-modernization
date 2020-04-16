@@ -1,0 +1,4 @@
+# pattern.yml과의 우선순위 확인 용도로 사용된 설정값으로 실제 패턴에서는 application.yml은 불필요함
+# PatternEnvironmentPostProcessor.java에서 @Order 확인
+# management.endpoints.web.exposure.include: info,health,env
+# server.port: 8090

@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springboot-metric-exporter-pattern
+  labels:
+    app: springboot-metric-exporter-pattern
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: springboot-metric-exporter-pattern
+  template:
+    metadata:
+      labels:
+        app: springboot-metric-exporter-pattern
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/path: '/metrics'
+        prometheus.io/port: '8080'
+    spec:
+      containers:
+      - name: springboot-metric-exporter-pattern
+        image: zzonsang2/springboot-metric-exporter-pattern:0.0.1
+        ports:
+        - containerPort: 8080
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: 128Mi            
+          limits:
+            memory: 512Mi 
+

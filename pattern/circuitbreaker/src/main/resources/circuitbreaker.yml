@@ -1,0 +1,17 @@
+# Actuator 적용에 따른 기본 설정값
+management.endpoints.web.base-path: /actuator
+management.endpoints.web.exposure.include: info,health,prometheus,env
+
+management.endpoint.health.show-details: always
+
+# circuit break pattern 설정
+management.metrics.tags.application: ${spring.application.name}
+
+management.health.diskspace.enabled: false
+management.health.circuitbreakers.enabled: true
+management.health.ratelimiters.enabled: false
+
+management.metrics.distribution.percentiles-histogram.http.server.requests: true
+management.metrics.distribution.percentiles-histogram.resilience4j.circuitbreaker.calls: true
+
+resilience4j.circuitbreaker.metrics.use_legacy_binder: true

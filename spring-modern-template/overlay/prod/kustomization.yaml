@@ -1,0 +1,24 @@
+bases:
+  - ../../../deploy-config/base
+  - ../../../deploy-config/pattern/config/prod
+namePrefix: modern-template-
+nameSuffix: -v0-prod
+commonLabels:
+  biz: spring-modern-template
+  app: modern-template
+images:
+  - name: cloudsvcdev/microservice
+    newName: cloudsvcdev/spring-modern-template
+    newTag: v0
+configMapGenerator:
+  - name: app-config
+    behavior: merge
+    files:
+      - application-overlay.yaml
+# 패치 대상 파일 목록
+patchesStrategicMerge:
+  - replicas-patch.yaml
+  - probe-patch.yaml
+  - serviceport-patch.yaml
+  - spec-patch.yaml
+  - metric-patch.yaml

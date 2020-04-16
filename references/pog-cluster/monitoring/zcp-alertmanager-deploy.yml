@@ -1,0 +1,111 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "7"
+  creationTimestamp: 2019-02-26T08:03:48Z
+  generation: 11
+  labels:
+    component: zcp-alertmanager
+  name: zcp-alertmanager
+  namespace: zcp-system
+  resourceVersion: "122915662"
+  selfLink: /apis/extensions/v1beta1/namespaces/zcp-system/deployments/zcp-alertmanager
+  uid: 0bde8fbd-399d-11e9-b959-fafab1df8288
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      component: zcp-alertmanager
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        component: zcp-alertmanager
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: beta.kubernetes.io/arch
+                operator: In
+                values:
+                - amd64
+              - key: role
+                operator: In
+                values:
+                - management
+      containers:
+      - env:
+        - name: MARIADB_ID
+          valueFrom:
+            secretKeyRef:
+              key: MARIADB_ID
+              name: zcp-alertmanager-secret
+        - name: MARIADB_PWD
+          valueFrom:
+            secretKeyRef:
+              key: MARIADB_PWD
+              name: zcp-alertmanager-secret
+        envFrom:
+        - configMapRef:
+            name: zcp-alertmanager-config
+        image: registry.au-syd.bluemix.net/cloudzcp/zcp-alertmanager:1.0.0
+        imagePullPolicy: Always
+        name: zcp-alertmanager
+        ports:
+        - containerPort: 8080
+          name: cont-port
+          protocol: TCP
+        resources:
+          limits:
+            memory: 800Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: FallbackToLogsOnError
+        volumeMounts:
+        - mountPath: /etc/localtime
+          name: timezone
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: zcp-system-admin
+      serviceAccountName: zcp-system-admin
+      terminationGracePeriodSeconds: 30
+      tolerations:
+      - effect: NoSchedule
+        key: management
+        operator: Equal
+        value: "true"
+      volumes:
+      - hostPath:
+          path: /usr/share/zoneinfo/Asia/Seoul
+          type: ""
+        name: timezone
+status:
+  availableReplicas: 1
+  conditions:
+  - lastTransitionTime: 2019-02-26T08:03:48Z
+    lastUpdateTime: 2019-06-19T05:28:03Z
+    message: ReplicaSet "zcp-alertmanager-7bc596b9f" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  - lastTransitionTime: 2020-04-07T18:14:15Z
+    lastUpdateTime: 2020-04-07T18:14:15Z
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  observedGeneration: 11
+  readyReplicas: 1
+  replicas: 1
+  updatedReplicas: 1

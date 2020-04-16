@@ -1,0 +1,51 @@
+apiVersion: v1
+data:
+  addon.yaml: |
+    apiVersion: 1
+    providers:
+     - name: 'Addon'
+       orgId: 1
+       folder: 'Addon Dashboards'
+       type: file
+       options:
+         path: /var/lib/grafana/dashboards/addon
+  cluster.yaml: |
+    apiVersion: 1
+    providers:
+     - name: 'Cluster'
+       orgId: 1
+       folder: 'Cluster Dashboards'
+       type: file
+       options:
+         path: /var/lib/grafana/dashboards/cluster
+  container.yaml: |
+    apiVersion: 1
+    providers:
+     - name: 'Container'
+       orgId: 1
+       folder: 'Container Dashboards'
+       type: file
+       options:
+         path: /var/lib/grafana/dashboards/container
+  system.yaml: |
+    apiVersion: 1
+    providers:
+     - name: 'System'
+       orgId: 1
+       folder: 'System Dashboards'
+       type: file
+       options:
+         path: /var/lib/grafana/dashboards/system
+kind: ConfigMap
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","data":{"addon.yaml":"apiVersion: 1\nproviders:\n - name: 'Addon'\n   orgId: 1\n   folder: 'Addon Dashboards'\n   type: file\n   options:\n     path: /var/lib/grafana/dashboards/addon\n","cluster.yaml":"apiVersion: 1\nproviders:\n - name: 'Cluster'\n   orgId: 1\n   folder: 'Cluster Dashboards'\n   type: file\n   options:\n     path: /var/lib/grafana/dashboards/cluster\n","container.yaml":"apiVersion: 1\nproviders:\n - name: 'Container'\n   orgId: 1\n   folder: 'Container Dashboards'\n   type: file\n   options:\n     path: /var/lib/grafana/dashboards/container\n","system.yaml":"apiVersion: 1\nproviders:\n - name: 'System'\n   orgId: 1\n   folder: 'System Dashboards'\n   type: file\n   options:\n     path: /var/lib/grafana/dashboards/system\n"},"kind":"ConfigMap","metadata":{"annotations":{},"labels":{"component":"grafana"},"name":"monitoring-grafana-config-provisioning","namespace":"zcp-system"}}
+  creationTimestamp: 2019-02-26T06:05:38Z
+  labels:
+    component: grafana
+  name: monitoring-grafana-config-provisioning
+  namespace: zcp-system
+  resourceVersion: "112688477"
+  selfLink: /api/v1/namespaces/zcp-system/configmaps/monitoring-grafana-config-provisioning
+  uid: 8a3576b7-398c-11e9-b959-fafab1df8288

@@ -1,0 +1,22 @@
+management:
+    endpoints:
+        web:
+            base-path: "/actuator"
+            exposure:
+                include : "info,health,env,prometheus"  # default : info,health
+    endpoint:
+        health:
+            show-details: always
+            circuitbreakers.enabled: true
+            diskspace.enabled: false
+            ratelimiters.enabled: false
+    metrics:
+        tags:
+            application: ${spring.application.name}
+        distribution:
+            sla.http.server.requests: "100ms,200ms,400ms"
+            percentiles-histogram:
+                http.server.requests: true
+                resilience4j.circuitbreaker.calls: true
+
+resilience4j.circuitbreaker.metrics.use_legacy_binder: true

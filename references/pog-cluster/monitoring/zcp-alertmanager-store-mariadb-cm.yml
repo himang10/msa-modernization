@@ -1,0 +1,53 @@
+apiVersion: v1
+data:
+  mariadb.cnf: "[client]\nport            = 3306\nsocket          = /var/run/mysqld/mysqld.sock\ndefault-character-set
+    = utf8  #tuning\n\n[mysqld_safe]\nsocket          = /var/run/mysqld/mysqld.sock\nnice
+    \           = 0\nskip_syslog\n\n[mysqld]\n#\n# * Basic Settings\n#\nuser            =
+    mysql\npid-file        = /var/run/mysqld/mysqld.pid\nsocket          = /var/run/mysqld/mysqld.sock\nport
+    \           = 3306\nbasedir         = /usr\ndatadir         = /var/lib/mysql\ntmpdir
+    \         = /tmp\nlc_messages_dir = /usr/share/mysql\nlc_messages     = en_US\nskip-external-locking\nbind-address
+    \           = 0.0.0.0   \n\nmax_connections         = 500   #tuning\nwait_timeout
+    \           = 600   #tuning\nmax_allowed_packet      = 256M  #tuning\nthread_cache_size
+    \      = 128\nsort_buffer_size        = 4M\nbulk_insert_buffer_size = 16M\ntmp_table_size
+    \         = 32M\nmax_heap_table_size     = 32M\n\n#\n# * MyISAM\n#\n# This replaces
+    the startup script and checks MyISAM tables if needed\n# the first time they are
+    touched. On error, make copy and try a repair.\nmyisam_recover_options = BACKUP\nkey_buffer_size
+    \        = 1G    #tuning\n#open-files-limit       = 2000\ntable_open_cache        =
+    400\nmyisam_sort_buffer_size = 512M\nconcurrent_insert       = 2\nread_buffer_size
+    \       = 2M\nread_rnd_buffer_size    = 1M\n\n#\n# * Query Cache Configuration\n#\n#
+    Cache only tiny result sets, so we can fit more in the query cache.\nquery_cache_limit
+    \              = 128K\nquery_cache_size                = 1G    #tuning\n# for
+    more write intensive setups, set to DEMAND or OFF\n#query_cache_type               =
+    DEMAND\n#\n# * Logging and Replication\n#\n# Both location gets rotated by the
+    cronjob.\n# Be aware that this log type is a performance killer.\n# As of 5.1
+    you can enable the log at runtime!\ngeneral_log_file        = /var/log/mysql/mysql.log\ngeneral_log
+    \            = 1\nlog_error               = /var/log/mysql/error.log\n#\n# Error
+    logging goes to syslog due to /etc/mysql/conf.d/mysqld_safe_syslog.cnf.\n#\n#
+    we do want to know about network errors and such\nlog_warnings            = 2\n\n#\n#
+    Enable the slow query log to see queries with especially long duration\n#slow_query_log[={0|1}]\nslow_query_log_file
+    \    = /var/log/mysql/mariadb-slow.log\nlong_query_time = 10\n#log_slow_rate_limit
+    \   = 1000\nlog_slow_verbosity      = query_plan\n#log-queries-not-using-indexes\n#log_slow_admin_statements\n#\n#
+    The following can be used as easy to replay backup logs or for replication.\n#
+    note: if you are setting up a replication slave, see README.Debian about\n#       other
+    settings you may need to change.\n#server-id              = 1\n#report_host            =
+    master1\n#auto_increment_increment = 2\n#auto_increment_offset  = 1\nlog_bin                 =
+    /var/log/mysql/mariadb-bin\nlog_bin_index           = /var/log/mysql/mariadb-bin.index\n#
+    not fab for performance, but safer\n#sync_binlog            = 1\nexpire_logs_days
+    \       = 10\nmax_binlog_size         = 100M\ndefault_storage_engine  = InnoDB\n#
+    you can't just change log file size, requires special procedure\n#innodb_log_file_size
+    \  = 50M\ninnodb_log_file_size    = 256M  #tuning\ninnodb_log_buffer_size  = 8M\ninnodb_file_per_table
+    \  = 1\ninnodb_open_files       = 400\ninnodb_io_capacity      = 400\ninnodb_flush_method
+    \    = O_DIRECT\ninnodb_lock_wait_timeout=500\ninnodb_buffer_pool_size=128MB\nconnect_timeout=5\n"
+kind: ConfigMap
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","data":{"mariadb.cnf":"[client]\nport            = 3306\nsocket          = /var/run/mysqld/mysqld.sock\ndefault-character-set = utf8  #tuning\n\n[mysqld_safe]\nsocket          = /var/run/mysqld/mysqld.sock\nnice            = 0\nskip_syslog\n\n[mysqld]\n#\n# * Basic Settings\n#\nuser            = mysql\npid-file        = /var/run/mysqld/mysqld.pid\nsocket          = /var/run/mysqld/mysqld.sock\nport            = 3306\nbasedir         = /usr\ndatadir         = /var/lib/mysql\ntmpdir          = /tmp\nlc_messages_dir = /usr/share/mysql\nlc_messages     = en_US\nskip-external-locking\nbind-address            = 0.0.0.0   \n\nmax_connections         = 500   #tuning\nwait_timeout            = 600   #tuning\nmax_allowed_packet      = 256M  #tuning\nthread_cache_size       = 128\nsort_buffer_size        = 4M\nbulk_insert_buffer_size = 16M\ntmp_table_size          = 32M\nmax_heap_table_size     = 32M\n\n#\n# * MyISAM\n#\n# This replaces the startup script and checks MyISAM tables if needed\n# the first time they are touched. On error, make copy and try a repair.\nmyisam_recover_options = BACKUP\nkey_buffer_size         = 1G    #tuning\n#open-files-limit       = 2000\ntable_open_cache        = 400\nmyisam_sort_buffer_size = 512M\nconcurrent_insert       = 2\nread_buffer_size        = 2M\nread_rnd_buffer_size    = 1M\n\n#\n# * Query Cache Configuration\n#\n# Cache only tiny result sets, so we can fit more in the query cache.\nquery_cache_limit               = 128K\nquery_cache_size                = 1G    #tuning\n# for more write intensive setups, set to DEMAND or OFF\n#query_cache_type               = DEMAND\n#\n# * Logging and Replication\n#\n# Both location gets rotated by the cronjob.\n# Be aware that this log type is a performance killer.\n# As of 5.1 you can enable the log at runtime!\ngeneral_log_file        = /var/log/mysql/mysql.log\ngeneral_log             = 1\nlog_error               = /var/log/mysql/error.log\n#\n# Error logging goes to syslog due to /etc/mysql/conf.d/mysqld_safe_syslog.cnf.\n#\n# we do want to know about network errors and such\nlog_warnings            = 2\n\n#\n# Enable the slow query log to see queries with especially long duration\n#slow_query_log[={0|1}]\nslow_query_log_file     = /var/log/mysql/mariadb-slow.log\nlong_query_time = 10\n#log_slow_rate_limit    = 1000\nlog_slow_verbosity      = query_plan\n#log-queries-not-using-indexes\n#log_slow_admin_statements\n#\n# The following can be used as easy to replay backup logs or for replication.\n# note: if you are setting up a replication slave, see README.Debian about\n#       other settings you may need to change.\n#server-id              = 1\n#report_host            = master1\n#auto_increment_increment = 2\n#auto_increment_offset  = 1\nlog_bin                 = /var/log/mysql/mariadb-bin\nlog_bin_index           = /var/log/mysql/mariadb-bin.index\n# not fab for performance, but safer\n#sync_binlog            = 1\nexpire_logs_days        = 10\nmax_binlog_size         = 100M\ndefault_storage_engine  = InnoDB\n# you can't just change log file size, requires special procedure\n#innodb_log_file_size   = 50M\ninnodb_log_file_size    = 256M  #tuning\ninnodb_log_buffer_size  = 8M\ninnodb_file_per_table   = 1\ninnodb_open_files       = 400\ninnodb_io_capacity      = 400\ninnodb_flush_method     = O_DIRECT\ninnodb_lock_wait_timeout=500\ninnodb_buffer_pool_size=128MB\nconnect_timeout=5\n"},"kind":"ConfigMap","metadata":{"annotations":{"kubernetes.io/change-cause":"kubectl apply --namespace=zcp-system --filename=./ --record=true"},"name":"zcp-alertmanager-store-mariadb","namespace":"zcp-system"}}
+    kubernetes.io/change-cause: kubectl apply --namespace=zcp-system --filename=./
+      --record=true
+  creationTimestamp: 2019-02-26T07:56:50Z
+  name: zcp-alertmanager-store-mariadb
+  namespace: zcp-system
+  resourceVersion: "79906"
+  selfLink: /api/v1/namespaces/zcp-system/configmaps/zcp-alertmanager-store-mariadb
+  uid: 128b98af-399c-11e9-8301-9a4341108516

@@ -1,0 +1,23 @@
+hystrix:
+  command:
+    default:
+      circuitBreaker:
+        enabled: true
+        errorThresholdPercentage: 50
+        sleepWindowInMilliseconds: 5000 
+      metrics:
+        rollingStats:
+          timeInMilliseconds: 20000
+    customCommandKey:
+      fallback:
+        enabled: false
+      circuitBreaker:
+        enabled: true
+        errorThresholdPercentage: 75
+        sleepWindowInMilliseconds: 15000
+        
+management:
+  endpoints:
+    web:
+      exposure:
+        include: hystrix.stream

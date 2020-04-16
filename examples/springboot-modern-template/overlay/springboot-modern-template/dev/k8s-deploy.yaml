@@ -1,0 +1,195 @@
+apiVersion: v1
+data:
+  application-overlay.yaml: "server:\n  port: 8080 # patch.yaml 과 동일한 의도의 개별 설정\nmanagement:\n
+    \ endpoint:\n    restart:\n      enabled: true\n\nspring:\n    application.name:
+    springboot-modern-template\n    jackson.serialization.indent_output: true\n\n
+    \   datasource:\n        url: 'jdbc:h2:file:~/temp/test'\n        driverClassName:
+    org.h2.Driver\n        username: sa\n        password: \n    jpa:\n        database-platform:
+    org.hibernate.dialect.H2Dialect\n        hibernate.ddl-auto: none\n    h2.console:\n
+    \       enabled: true\n        path: /h2\n        settings.web-allow-others: false"
+  application.yaml: |-
+    server:
+      port: 8080 # TODO overlay에서의 port변경 예제 요청됨. deployment/service patch까지.
+kind: ConfigMap
+metadata:
+  annotations: {}
+  labels:
+    app: modernpattern
+    biz: modernpattern-sample
+  name: modernpattern-app-config-sample-dev-b948kcfgg8
+---
+apiVersion: v1
+data:
+  application-circuitbreaker.yaml: |-
+    management:
+        health:
+            diskspace.enabled: false
+            circuitbreakers.enabled: true
+            ratelimiters.enabled: false
+        metrics:
+            tags.application: ${spring.application.name}
+            distribution:
+                sla.http.server.requests: "100ms,200ms,400ms"
+                percentiles-histogram:
+                    http.server.requests: true
+                    resilience4j.circuitbreaker.calls: true
+
+    resilience4j.circuitbreaker.metrics.use_legacy_binder: true
+  application-mariadb.yaml: |
+    # spring:
+    #   datasource:
+    #     platform: mariadb
+    #     url: jdbc:mariadb://awesome-db-mariadb:3306/awesomeshoppingdb
+    #     username: root
+    #     password: p455w0rd
+    #     driver-class-name: org.mariadb.jdbc.Driver
+    #     initialization-mode: always
+    #   h2:
+    #     console:
+    #       enabled: false
+  application-metric.yaml: |-
+    management:
+        endpoints:
+            web:
+                base-path: "/actuator"
+                exposure:
+                    include : "info,health,prometheus"  # default : info,health
+  application-rabbitmq.yaml: |-
+    # spring:
+    #   # 신규 패턴 적용시의 설정
+    #   rabbitmq:
+    #     host: awesome-mq-rabbitmq
+    #     port: 5672
+    #     username: labs
+    #     password: awesome-rabbitmq
+    #   # 초기 awesome-shopping 구현시 사용 설정
+    #   # TODO remove this section
+    #   cloud:
+    #     stream:
+    #       binders:
+    #         rabbitmq:
+    #           type: rabbit
+    #           environment:
+    #             spring:
+    #               rabbitmq:
+    #                 host: awesome-mq-rabbitmq
+    #                 port: 5672
+    #                 username: labs
+    #                 password: awesome-rabbitmq
+    # management:
+    #   health:
+    #     rabbit:
+    #       enabled: false
+  application-redis.yaml: |-
+    # spring:
+    #   redis:
+    #     port: 6379
+    #     host: redis-host
+    #     password: redis-password
+    #     lettuce:
+    #       pool:
+    #         max-active: 10
+    #         max-idle: 10
+    #         min-idle: 2
+    #         max-wait: 30
+    #   session:
+    #     store-type: redis
+    #     redis:
+    #       flush-mode: on_save
+    #       save-mode: always
+    #       namespace: awesome:session
+kind: ConfigMap
+metadata:
+  labels:
+    app: modernpattern
+    biz: modernpattern-sample
+  name: modernpattern-pattern-config-sample-dev-tctf2t6db6
+---
+apiVersion: v1
+data:
+  SPRING_CONFIG_LOCATION: classpath:/,classpath:/config/,file:/,file:/pattern/application-mariadb.yaml,file:/pattern/application-rabbitmq.yaml,file:/pattern/application-redis.yaml,file:/config/,file:/config/application-overlay.yaml,file:/config/application-circuitbreaker.yaml,file:/config/application-metric.yaml
+kind: ConfigMap
+metadata:
+  labels:
+    app: modernpattern
+    biz: modernpattern-sample
+  name: modernpattern-system-config-sample-dev-fchb72df2t
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: modernpattern
+    biz: modernpattern-sample
+  name: modernpattern-app-sample-dev
+spec:
+  ports:
+  - port: 8080
+    targetPort: 8080
+  selector:
+    app: modernpattern
+    biz: modernpattern-sample
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: modernpattern
+    biz: modernpattern-sample
+  name: modernpattern-app-sample-dev
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: modernpattern
+      biz: modernpattern-sample
+  template:
+    metadata:
+      labels:
+        app: modernpattern
+        biz: modernpattern-sample
+    spec:
+      containers:
+      - envFrom:
+        - configMapRef:
+            name: modernpattern-system-config-sample-dev-fchb72df2t
+        image: zzonsang2/springboot-modern-template:0.0.1
+        livenessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 20
+          timeoutSeconds: 3
+        name: microservice
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          failureThreshold: 2
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 20
+          timeoutSeconds: 2
+        resources:
+          limits:
+            memory: 256Mi
+          requests:
+            memory: 128Mi
+        volumeMounts:
+        - mountPath: /config
+          name: app-config-volume
+          readOnly: true
+        - mountPath: /pattern
+          name: pattern-config-volume
+          readOnly: true
+      volumes:
+      - configMap:
+          name: modernpattern-app-config-sample-dev-b948kcfgg8
+        name: app-config-volume
+      - configMap:
+          name: modernpattern-pattern-config-sample-dev-tctf2t6db6
+        name: pattern-config-volume

@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springboot-circuitbreaker-pattern
+  labels:
+    app: springboot-circuitbreaker-pattern
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: springboot-circuitbreaker-pattern
+  template:
+    metadata:
+      labels:
+        app: springboot-circuitbreaker-pattern
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/path: '/actuator/prometheus'
+        prometheus.io/port: '8080'
+    spec:
+      containers:
+      - name: springboot-circuitbreaker-pattern
+        image: zzonsang2/springboot-circuitbreaker-pattern:0.0.1
+        ports:
+        - containerPort: 8080
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: 128Mi            
+          limits:
+            memory: 256Mi
+        envFrom:
+          - configMapRef:
+              name: springboot-circuitbreaker-pattern-kv-config
+        volumeMounts:
+          - mountPath: /config
+            name: springboot-circuitbreaker-pattern-config-volume
+            readOnly: true
+      volumes:
+        - name: springboot-circuitbreaker-pattern-config-volume
+          configMap:
+            name: springboot-circuitbreaker-pattern-config
+            items:
+              - key: application.yaml
+                path: application.yaml
+              - key: application-overlay.yaml
+                # 최종적으로 /config/overlay/application.yaml 에 위치
+                # 이 property를 참조하기 위한 설정은 base/kustomization.yaml에 있다.
+                path: overlay/application.yaml
+

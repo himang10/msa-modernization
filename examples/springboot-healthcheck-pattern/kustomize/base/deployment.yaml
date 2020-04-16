@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springboot-healthcheck-pattern
+  labels:
+    app: springboot-healthcheck-pattern
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: springboot-healthcheck-pattern
+  template:
+    metadata:
+      labels:
+        app: springboot-healthcheck-pattern
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/path: '/actuator/prometheus'
+        prometheus.io/port: '8080'
+    spec:
+      containers:
+      - name: springboot-healthcheck-pattern
+        image: zzonsang2/springboot-healthcheck-pattern:0.0.1
+        ports:
+        - containerPort: 8080
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: 128Mi            
+          limits:
+            memory: 256Mi
+        envFrom:
+          - configMapRef:
+              name: springboot-healthcheck-pattern-kv-config
+        volumeMounts:
+          - mountPath: /config
+            name: springboot-healthcheck-pattern-config-volume
+            readOnly: true
+      volumes:
+        - name: springboot-healthcheck-pattern-config-volume
+          configMap:
+            name: springboot-healthcheck-pattern-config
+            items:
+              - key: application.yaml
+                path: application.yaml
+              - key: application-overlay.yaml
+                # 최종적으로 /config/overlay/application.yaml 에 위치
+                # 이 property를 참조하기 위한 설정은 base/kustomization.yaml에 있다.
+                path: overlay/application.yaml
+

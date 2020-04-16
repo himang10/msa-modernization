@@ -1,0 +1,17 @@
+apiVersion: v1
+data:
+  custom.conf: |
+    [INPUT]
+      Name              tail
+      Tag               custom.*
+      Path              /fluent-bit/zcp/log/*.log
+      Parser            docker
+kind: ConfigMap
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","data":{"custom.conf":"[INPUT]\n  Name              tail\n  Tag               custom.*\n  Path              /fluent-bit/zcp/log/*.log\n  Parser            docker\n"},"kind":"ConfigMap","metadata":{"annotations":{},"labels":{"app":"fluent-bit"},"name":"fluent-bit-custom-config","namespace":"zcp-system"}}
+  labels:
+    app: fluent-bit
+  name: fluent-bit-custom-config
+  namespace: zcp-system

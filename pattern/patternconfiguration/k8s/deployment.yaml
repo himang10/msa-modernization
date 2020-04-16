@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pattern-config
+  labels:
+    app: pattern-config
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pattern-config
+  template:
+    metadata:
+      labels:
+        app: pattern-config
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/path: '/actuator/prometheus'
+        prometheus.io/port: '8080'
+    spec:
+      containers:
+      - name: pattern-config
+        image: zzonsang2/pattern-config:0.0.1
+        ports:
+        - containerPort: 8080
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: 128Mi            
+          limits:
+            memory: 256Mi
+        envFrom:
+          - configMapRef:
+              name: pattern-config-kv-config
+        volumeMounts:
+          - mountPath: /config
+            name: pattern-config-config-volume
+            readOnly: true
+      volumes:
+        - name: pattern-config-config-volume
+          configMap:
+            name: pattern-config-config
+            items:
+              - key: application.yaml
+                path: application.yaml
+              - key: application-overlay.yaml
+                # 최종적으로 /config/overlay/application.yaml 에 위치
+                # 이 property를 참조하기 위한 설정은 base/kustomization.yaml에 있다.
+                path: overlay/application.yaml
+

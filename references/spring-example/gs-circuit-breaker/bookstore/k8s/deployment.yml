@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: circuit-breaker-bookstore
+  labels:
+    app: circuit-breaker-bookstore
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: circuit-breaker-bookstore
+  template:
+    metadata:
+      labels:
+        app: circuit-breaker-bookstore
+    spec:
+      containers:
+      - name: circuit-breaker-bookstore
+        image: zzonsang2/circuit-breaker-bookstore:0.0.1
+        ports:
+        - containerPort: 8080
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: 128Mi            
+          limits:
+            memory: 512Mi 
+

@@ -1,0 +1,8 @@
+spring.application.name=spring-boot-rabbitmq
+server.port=8083
+
+spring.rabbitmq.host=${spring.rabbitmq.host}
+spring.rabbitmq.port=${spring.rabbitmq.port}
+spring.rabbitmq.username=${spring.rabbitmq.username}
+spring.rabbitmq.password=${spring.rabbitmq.password}
+spring.rabbitmq.virtual-host=${spring.rabbitmq.virtualhost}

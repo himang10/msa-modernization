@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+spec:
+  # kustomize commonLabels에 의해 생성
+  # selector:
+  #   matchLabels:
+  template:
+    spec:
+      # serviceAccountName: config-reader
+      containers:
+      - name: microservice
+        image: cloudsvcdev/microservice
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 100
+          timeoutSeconds: 2
+          periodSeconds: 3
+          failureThreshold: 2
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 400
+          timeoutSeconds: 3
+          periodSeconds: 10
+          failureThreshold: 5
+        ports:
+        - containerPort: 8080
+        envFrom:
+          - configMapRef:
+              name: system-config
+        volumeMounts:
+          - mountPath: /config
+            name: app-config-volume
+            readOnly: true
+          - mountPath: /pattern
+            name: pattern-config-volume
+            readOnly: true
+      volumes:
+        - name: app-config-volume
+          configMap:
+            name: app-config
+        - name: pattern-config-volume
+          configMap:
+            name: pattern-config

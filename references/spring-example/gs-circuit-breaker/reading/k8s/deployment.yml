@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: circuit-breaker-reading
+  labels:
+    app: circuit-breaker-reading
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: circuit-breaker-reading
+  template:
+    metadata:
+      labels:
+        app: circuit-breaker-reading
+    spec:
+      containers:
+      - name: circuit-breaker-reading
+        image: zzonsang2/circuit-breaker-reading:0.0.1
+        ports:
+        - containerPort: 8080
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: 128Mi            
+          limits:
+            memory: 512Mi 
+

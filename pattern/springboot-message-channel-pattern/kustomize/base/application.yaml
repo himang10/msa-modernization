@@ -1,0 +1,17 @@
+# 개발자 설정 영역
+server:
+  port: 8081
+
+domain:
+  name: order
+
+spring:
+  application:
+    name: message-pattern
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - "*"

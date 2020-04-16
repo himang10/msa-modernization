@@ -1,0 +1,25 @@
+# spring:
+#   # 신규 패턴 적용시의 설정
+#   rabbitmq:
+#     host: awesome-mq-rabbitmq
+#     port: 5672
+#     username: labs
+#     password: awesome-rabbitmq
+#   # 초기 awesome-shopping 구현시 사용 설정
+#   # TODO remove this section
+#   cloud:
+#     stream:
+#       binders:
+#         rabbitmq:
+#           type: rabbit
+#           environment:
+#             spring:
+#               rabbitmq:
+#                 host: awesome-mq-rabbitmq
+#                 port: 5672
+#                 username: labs
+#                 password: awesome-rabbitmq
+# management:
+#   health:
+#     rabbit:
+#       enabled: false

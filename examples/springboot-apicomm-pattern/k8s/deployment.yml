@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springboot-apicomm-pattern
+  labels:
+    app: springboot-apicomm-pattern
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: springboot-apicomm-pattern
+  template:
+    metadata:
+      labels:
+        app: springboot-apicomm-pattern
+    spec:
+      containers:
+      - name: springboot-apicomm-pattern
+        image: zzonsang2/springboot-apicomm-pattern:0.0.1
+        ports:
+        - containerPort: 8080
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: 128Mi            
+          limits:
+            memory: 512Mi 
+#        livenessProbe:
+#          httpGet:
+#            path: /actuator/health
+#            port: 8080
+#          initialDelaySeconds: 60
+#          periodSeconds: 20
+#        readinessProbe:
+#          httpGet:
+#            path: /actuator/health
+#            port: 8080
+#          initialDelaySeconds: 60
+#          periodSeconds: 20

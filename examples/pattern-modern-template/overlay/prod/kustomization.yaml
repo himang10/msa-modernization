@@ -1,0 +1,17 @@
+bases:
+  - ../../../base
+  - ../../../pattern/config/prod
+namePrefix: account- # account-app
+nameSuffix: -v0-prod
+commonLabels:
+  biz: awesome-shopping
+  app: account
+images:
+  - name: cloudsvcdev/microservice
+    newName: cloudsvcdev/awesome-account-service
+    newTag: approved-v0-129130
+configMapGenerator:
+  - name: app-config
+    behavior: merge
+    files:
+      - application-overlay.yaml

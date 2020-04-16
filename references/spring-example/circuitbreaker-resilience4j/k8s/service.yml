@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: circuitbreaker-resilience4j
+spec:
+  ports:
+  - name: "http"
+    port: 8080
+    targetPort: 8080
+  selector:
+    app: circuitbreaker-resilience4j
+  type: NodePort

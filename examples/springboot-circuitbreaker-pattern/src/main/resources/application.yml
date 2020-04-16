@@ -1,0 +1,35 @@
+spring:
+    application.name: springboot-circuitbreaker-pattern
+    jackson.serialization.indent_output: true
+    datasource:
+        url: 'jdbc:h2:file:~/temp/test'
+        driverClassName: org.h2.Driver
+        username: sa
+        password: 
+    jpa:
+        database-platform: org.hibernate.dialect.H2Dialect
+        hibernate.ddl-auto: none
+    h2.console:
+        enabled: true
+        path: /h2
+        settings.web-allow-others: false
+
+info:
+    name: ${spring.application.name}
+    description: springboot-circuitbreaker-pattern demo
+    environment: ${spring.profiles.active}
+    version: 0.0.1
+
+
+# management.endpoints.web.exposure.include: '*'
+# management.endpoint.health.show-details: always
+# management.metrics.tags.application: ${spring.application.name}
+
+# management.health.diskspace.enabled: false
+# management.health.circuitbreakers.enabled: true
+# management.health.ratelimiters.enabled: false
+
+# management.metrics.distribution.percentiles-histogram.http.server.requests: true
+# management.metrics.distribution.percentiles-histogram.resilience4j.circuitbreaker.calls: true
+
+# resilience4j.circuitbreaker.metrics.use_legacy_binder: true

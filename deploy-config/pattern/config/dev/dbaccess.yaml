@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    platform: mariadb
+    url: jdbc:mariadb://awesome-db-mariadb:3306/awesomeshoppingdb
+    username: root
+    password: p455w0rd
+    driver-class-name: org.mariadb.jdbc.Driver
+    initialization-mode: always
+  h2:
+    console:
+      enabled: false
+# property 참조 우선순위 확인 위한 예제값
+awesome:
+  config: config

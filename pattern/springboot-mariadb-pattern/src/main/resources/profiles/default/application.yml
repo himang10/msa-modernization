@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: order-service
+  datasource:
+    initialization-mode: always
+  mvc:
+    throw-exception-if-no-handler-found: true
+  jackson:
+    date-format: "yyyy-MM-dd'T'HH:mm:ss"
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        show-sql: true
+        use_sql_comments: true
+        format_sql: true
+    open-in-view: true
+    generate-ddl: true
+
+server:
+  port: 8000

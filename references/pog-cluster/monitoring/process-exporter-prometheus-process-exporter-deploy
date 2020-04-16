@@ -1,0 +1,33 @@
+apiVersion: v1
+data:
+  config.yml: |-
+    process_names:
+    - cmdline:
+      - .+
+      name: '{{.Comm}}'
+    - exe:
+      - /usr/local/bin/containerd
+      name: containerd
+    - cmdline:
+      - kubelet
+      exe:
+      - /usr/local/bin/hyperkube
+      name: hyperkube:kubelet
+    - cmdline:
+      - proxy
+      exe:
+      - /usr/local/bin/hyperkube
+      name: hyperkube:proxy
+kind: ConfigMap
+metadata:
+  creationTimestamp: 2019-04-10T05:07:51Z
+  labels:
+    app: prometheus-process-exporter
+    chart: prometheus-process-exporter-0.2.2
+    heritage: Tiller
+    release: process-exporter
+  name: process-exporter-prometheus-process-exporter
+  namespace: zcp-system
+  resourceVersion: "10819970"
+  selfLink: /api/v1/namespaces/zcp-system/configmaps/process-exporter-prometheus-process-exporter
+  uid: 97375aba-5b4e-11e9-b120-66d049a7a08c

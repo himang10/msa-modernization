@@ -1,0 +1,24 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: spring-boot-mongodb
+
+  data:
+    mongodb:
+#      host: 127.0.0.1
+#      port: 30002
+      host: 169.56.87.77
+      port: 27017
+      database: springboot-mongo
+    
+  thymeleaf:
+    cache: false
+
+  servlet: 
+    multipart:
+      max-file-size: 256MB
+      max-request-size: 256MB
+      enabled: true
+      

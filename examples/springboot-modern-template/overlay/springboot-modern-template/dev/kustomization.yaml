@@ -1,0 +1,23 @@
+bases:
+  - ../../../base # deployment, service 조합을 위한 기본 base
+  - ../../../pattern/config/dev
+namePrefix: modernpattern- # base에 결합하여 bff-app
+nameSuffix: -sample-dev # base에 결합하여 bff-app-v0-dev 가 됨
+commonLabels:
+  biz: modernpattern-sample # 모든 overlay kustomization 에 적용된 라벨
+  app: modernpattern # overlay별로 다르게 적용되는 라벨
+images: # deployment에 선언된 이미지 name 치환
+  - name: cloudsvcdev/microservice
+    newName: zzonsang2/springboot-modern-template
+    newTag: 0.0.1
+configMapGenerator:
+  - name: app-config # spring properties를 위한 파일기반 ConfigMap의 생성
+    behavior: merge # base에서 미리 선언한 app-config에 파일을 추가하는 개념이 된다.
+    files:
+      - application-overlay.yaml # 반드시 kustomzation과 동일 또는 하위 경로에 위치해야 함
+patchesStrategicMerge:
+  # Deployment 및 Service 변경을 위한 패치의 선언
+  - replicas-patch.yaml
+  - probe-patch.yaml
+  - serviceport-patch.yaml
+  - spec-patch.yaml

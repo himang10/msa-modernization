@@ -1,0 +1,138 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"extensions/v1beta1","kind":"Deployment","metadata":{"annotations":{"kubernetes.io/change-cause":"kubectl apply --namespace=zcp-system --filename=./ --record=true"},"name":"zcp-alertmanager-store-mariadb","namespace":"zcp-system"},"spec":{"replicas":1,"template":{"metadata":{"labels":{"app":"zcp-alertmanager-store-mariadb"}},"spec":{"affinity":{"nodeAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":{"nodeSelectorTerms":[{"matchExpressions":[{"key":"beta.kubernetes.io/arch","operator":"In","values":["amd64"]},{"key":"role","operator":"In","values":["management"]}]}]}}},"containers":[{"env":[{"name":"MYSQL_ROOT_PASSWORD","valueFrom":{"secretKeyRef":{"key":"password","name":"zcp-alertmanager-store-mariadb"}}}],"image":"registry.au-syd.bluemix.net/cloudzcp/mariadb:10.3.7","livenessProbe":{"exec":{"command":["mysqladmin","ping"]},"initialDelaySeconds":30,"timeoutSeconds":5},"name":"mariadb","ports":[{"containerPort":3306,"name":"mariadb","protocol":"TCP"}],"readinessProbe":{"exec":{"command":["bash","-c","mysql -uroot -p\"${MYSQL_ROOT_PASSWORD}\" -e 'show databases;'"]},"initialDelaySeconds":20,"timeoutSeconds":5},"resources":{"limits":{"cpu":"800m","memory":"1Gi"},"requests":{"cpu":"200m","memory":"512Mi"}},"volumeMounts":[{"mountPath":"/etc/localtime","name":"tz-config"},{"mountPath":"/etc/mysql/conf.d","name":"config"},{"mountPath":"/var/lib/mysql","name":"zcp-alertmanager-store-volume"}]}],"tolerations":[{"effect":"NoSchedule","key":"management","operator":"Equal","value":"true"}],"volumes":[{"hostPath":{"path":"/usr/share/zoneinfo/Asia/Seoul"},"name":"tz-config"},{"configMap":{"items":[{"key":"mariadb.cnf","path":"mariadb.cnf"}],"name":"zcp-alertmanager-store-mariadb"},"name":"config"},{"name":"zcp-alertmanager-store-volume","persistentVolumeClaim":{"claimName":"zcp-alertmanager-store-data"}}]}}}}
+    kubernetes.io/change-cause: kubectl apply --namespace=zcp-system --filename=./
+      --record=true
+  creationTimestamp: 2019-02-26T07:56:50Z
+  generation: 1
+  labels:
+    app: zcp-alertmanager-store-mariadb
+  name: zcp-alertmanager-store-mariadb
+  namespace: zcp-system
+  resourceVersion: "122915610"
+  selfLink: /apis/extensions/v1beta1/namespaces/zcp-system/deployments/zcp-alertmanager-store-mariadb
+  uid: 12a45f82-399c-11e9-8301-9a4341108516
+spec:
+  progressDeadlineSeconds: 2147483647
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: zcp-alertmanager-store-mariadb
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: zcp-alertmanager-store-mariadb
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: beta.kubernetes.io/arch
+                operator: In
+                values:
+                - amd64
+              - key: role
+                operator: In
+                values:
+                - management
+      containers:
+      - env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: zcp-alertmanager-store-mariadb
+        image: registry.au-syd.bluemix.net/cloudzcp/mariadb:10.3.7
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          exec:
+            command:
+            - mysqladmin
+            - ping
+          failureThreshold: 3
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        name: mariadb
+        ports:
+        - containerPort: 3306
+          name: mariadb
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - bash
+            - -c
+            - mysql -uroot -p"${MYSQL_ROOT_PASSWORD}" -e 'show databases;'
+          failureThreshold: 3
+          initialDelaySeconds: 20
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: 800m
+            memory: 1Gi
+          requests:
+            cpu: 200m
+            memory: 512Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /etc/localtime
+          name: tz-config
+        - mountPath: /etc/mysql/conf.d
+          name: config
+        - mountPath: /var/lib/mysql
+          name: zcp-alertmanager-store-volume
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      tolerations:
+      - effect: NoSchedule
+        key: management
+        operator: Equal
+        value: "true"
+      volumes:
+      - hostPath:
+          path: /usr/share/zoneinfo/Asia/Seoul
+          type: ""
+        name: tz-config
+      - configMap:
+          defaultMode: 420
+          items:
+          - key: mariadb.cnf
+            path: mariadb.cnf
+          name: zcp-alertmanager-store-mariadb
+        name: config
+      - name: zcp-alertmanager-store-volume
+        persistentVolumeClaim:
+          claimName: zcp-alertmanager-store-data
+status:
+  availableReplicas: 1
+  conditions:
+  - lastTransitionTime: 2019-02-26T07:56:50Z
+    lastUpdateTime: 2019-02-26T07:56:50Z
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  observedGeneration: 1
+  readyReplicas: 1
+  replicas: 1
+  updatedReplicas: 1

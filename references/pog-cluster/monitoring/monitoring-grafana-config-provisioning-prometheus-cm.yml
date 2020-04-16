@@ -1,0 +1,26 @@
+apiVersion: v1
+data:
+  provisioning-database.yaml: |
+    apiVersion: 1
+    datasources:
+    - name: 'prometheus'
+      type: 'prometheus'
+      access: 'proxy'
+      org_id: 1
+      url: 'http://prometheus-service:9090'
+      is_default: true
+      version: 1
+      editable: false
+kind: ConfigMap
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","data":{"provisioning-database.yaml":"apiVersion: 1\ndatasources:\n- name: 'prometheus'\n  type: 'prometheus'\n  access: 'proxy'\n  org_id: 1\n  url: 'http://prometheus-service:9090'\n  is_default: true\n  version: 1\n  editable: false\n"},"kind":"ConfigMap","metadata":{"annotations":{},"labels":{"component":"grafana"},"name":"monitoring-grafana-config-provisioning-prometheus","namespace":"zcp-system"}}
+  creationTimestamp: 2019-02-26T06:05:38Z
+  labels:
+    component: grafana
+  name: monitoring-grafana-config-provisioning-prometheus
+  namespace: zcp-system
+  resourceVersion: "113538289"
+  selfLink: /api/v1/namespaces/zcp-system/configmaps/monitoring-grafana-config-provisioning-prometheus
+  uid: 8a2e6f27-398c-11e9-b959-fafab1df8288

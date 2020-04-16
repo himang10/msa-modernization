@@ -1,0 +1,23 @@
+spring:
+    application.name: springboot-metric-pattern
+    jackson.serialization.indent_output: true
+
+    ## Backing Service 정보
+    datasource:
+        url: 'jdbc:h2:file:~/temp/test'
+        driverClassName: org.h2.Driver
+        username: sa
+        password: 
+    jpa:
+        database-platform: org.hibernate.dialect.H2Dialect
+        hibernate.ddl-auto: none
+    h2.console:
+        enabled: true
+        path: /h2
+        settings.web-allow-others: false
+
+info:
+    name: ${spring.application.name}
+    description: springboot-metric-pattern demo
+    environment: ${spring.profiles.active}
+    version: 0.0.1

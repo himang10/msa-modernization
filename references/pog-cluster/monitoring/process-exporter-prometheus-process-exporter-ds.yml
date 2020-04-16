@@ -1,0 +1,108 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  creationTimestamp: 2019-04-10T05:07:51Z
+  generation: 5
+  labels:
+    app: prometheus-process-exporter
+    chart: prometheus-process-exporter-0.2.2
+    heritage: Tiller
+    release: process-exporter
+  name: process-exporter-prometheus-process-exporter
+  namespace: zcp-system
+  resourceVersion: "123000966"
+  selfLink: /apis/extensions/v1beta1/namespaces/zcp-system/daemonsets/process-exporter-prometheus-process-exporter
+  uid: 9744f277-5b4e-11e9-b120-66d049a7a08c
+spec:
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: prometheus-process-exporter
+      release: process-exporter
+  template:
+    metadata:
+      annotations:
+        checksum/config: 36eb2f23fb57145af786f0e26e6a6279ac73ac30fd1ca7c9154e78ae8e3ce6ec
+      creationTimestamp: null
+      labels:
+        app: prometheus-process-exporter
+        chart: prometheus-process-exporter-0.2.2
+        heritage: Tiller
+        release: process-exporter
+    spec:
+      containers:
+      - args:
+        - --procfs=/host/proc
+        - --config.path=/var/process-exporter/config.yml
+        - --web.listen-address=0.0.0.0:9101
+        image: ncabatoff/process-exporter:0.4.0
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 9101
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        name: process-exporter
+        ports:
+        - containerPort: 9101
+          hostPort: 9101
+          name: metrics
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 9101
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /host/proc
+          name: proc
+          readOnly: true
+        - mountPath: /var/process-exporter
+          name: config
+      dnsPolicy: ClusterFirst
+      hostNetwork: true
+      hostPID: true
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+      serviceAccount: process-exporter-prometheus-process-exporter
+      serviceAccountName: process-exporter-prometheus-process-exporter
+      terminationGracePeriodSeconds: 30
+      tolerations:
+      - operator: Exists
+      volumes:
+      - hostPath:
+          path: /proc
+          type: ""
+        name: proc
+      - configMap:
+          defaultMode: 420
+          name: process-exporter-prometheus-process-exporter
+        name: config
+  templateGeneration: 5
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
+status:
+  currentNumberScheduled: 13
+  desiredNumberScheduled: 13
+  numberAvailable: 12
+  numberMisscheduled: 0
+  numberReady: 12
+  numberUnavailable: 1
+  observedGeneration: 5
+  updatedNumberScheduled: 13

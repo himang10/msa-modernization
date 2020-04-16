@@ -1,0 +1,48 @@
+## User ##
+spring:
+    application.name: springboot-modern-template
+    jackson.serialization.indent_output: true
+
+    ## Backing Service 정보
+    datasource:
+        url: 'jdbc:h2:file:~/temp/test'
+        driverClassName: org.h2.Driver
+        username: sa
+        password: 
+    jpa:
+        database-platform: org.hibernate.dialect.H2Dialect
+        hibernate.ddl-auto: none
+    h2.console:
+        enabled: true
+        path: /h2
+        settings.web-allow-others: false
+
+info:
+    name: ${spring.application.name}
+    description: springboot-modern-template demo
+    environment: ${spring.profiles.active}
+    version: 0.0.1
+
+## Platform ##
+management:
+    endpoints:
+        web:
+            base-path: "/actuator"
+            exposure:
+                include : "info,health,prometheus"  # default : info,health
+    endpoint:
+        health:
+            show-details: always
+            circuitbreakers.enabled: true
+            diskspace.enabled: false
+            ratelimiters.enabled: false
+    metrics:
+        tags:
+            application: ${spring.application.name}
+        distribution:
+            sla.http.server.requests: "100ms,200ms,400ms"
+            percentiles-histogram:
+                http.server.requests: true
+                resilience4j.circuitbreaker.calls: true
+
+resilience4j.circuitbreaker.metrics.use_legacy_binder: true

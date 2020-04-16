@@ -1,0 +1,7 @@
+spring:
+    application.name: springboot-apicomm-pattern
+info:
+    name: ${spring.application.name}
+    description: springboot-apicomm-pattern demo
+    environment: ${spring.profiles.active}
+    version: 0.0.1

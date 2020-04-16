@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springboot-circuitbreaker-pattern
+  labels:
+    app: springboot-circuitbreaker-pattern
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: springboot-circuitbreaker-pattern
+  template:
+    metadata:
+      labels:
+        app: springboot-circuitbreaker-pattern
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/path: '/actuator/prometheus'
+        prometheus.io/port: '8080'
+    spec:
+      containers:
+      - name: springboot-circuitbreaker-pattern
+        image: zzonsang2/springboot-circuitbreaker-pattern:0.0.1
+        ports:
+        - containerPort: 8080
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: 128Mi            
+          limits:
+            memory: 256Mi 
+

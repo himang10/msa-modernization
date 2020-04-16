@@ -1,0 +1,13 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+       - id: per_route_timeouts
+         uri: https://example.org
+         predicates:
+          - name: Path
+            args:
+              pattern: /delay/{timeout}
+         metadata:
+           response-timeout: 200
+           connect-timeout: 200

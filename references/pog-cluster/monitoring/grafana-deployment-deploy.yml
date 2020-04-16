@@ -1,0 +1,171 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "22"
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"extensions/v1beta1","kind":"Deployment","metadata":{"annotations":{},"name":"grafana-deployment","namespace":"zcp-system"},"spec":{"replicas":1,"selector":{"matchLabels":{"component":"grafana"}},"template":{"metadata":{"labels":{"component":"grafana"}},"spec":{"affinity":{"nodeAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":{"nodeSelectorTerms":[{"matchExpressions":[{"key":"beta.kubernetes.io/arch","operator":"In","values":["amd64"]},{"key":"node-role.kubernetes.io/management","operator":"Exists"}]}]}}},"containers":[{"env":[{"name":"GF_SECURITY_ADMIN_USER","value":"admin"},{"name":"GF_SECURITY_ADMIN_PASSWORD","value":"admin"},{"name":"GF_SERVER_DOMAIN","valueFrom":{"configMapKeyRef":{"key":"GF_SERVER_DOMAIN","name":"monitoring-grafana-config"}}},{"name":"GF_AUTH_GENERIC_OAUTH_AUTH_URL","valueFrom":{"configMapKeyRef":{"key":"GF_AUTH_GENERIC_OAUTH_AUTH_URL","name":"monitoring-grafana-config"}}}],"image":"au.icr.io/cloudzcp/grafana:6.7.0","livenessProbe":{"failureThreshold":3,"httpGet":{"path":"/api/health","port":3000,"scheme":"HTTP"},"initialDelaySeconds":30,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":30},"name":"grafana","ports":[{"containerPort":3000,"name":"grafana","protocol":"TCP"}],"readinessProbe":{"failureThreshold":3,"httpGet":{"path":"/api/health","port":3000,"scheme":"HTTP"},"initialDelaySeconds":30,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":30},"resources":{"limits":{"cpu":"100m","memory":"100Mi"},"requests":{"cpu":"100m","memory":"100Mi"}},"volumeMounts":[{"mountPath":"/var/lib/grafana","name":"storage"},{"mountPath":"/etc/grafana","name":"config"},{"mountPath":"/var/lib/grafana/dashboards/system","name":"dashboard-system-volume"},{"mountPath":"/var/lib/grafana/dashboards/cluster","name":"dashboard-cluster-volume"},{"mountPath":"/var/lib/grafana/dashboards/container","name":"dashboard-container-volume"},{"mountPath":"/var/lib/grafana/dashboards/addon","name":"dashboard-addon-volume"},{"mountPath":"/etc/grafana/provisioning/dashboards","name":"config-volume-provisioning"},{"mountPath":"/etc/grafana/provisioning/datasources","name":"config-volume-provisioning-prometheus"}]}],"restartPolicy":"Always","securityContext":{"fsGroup":472,"runAsUser":472},"tolerations":[{"effect":"NoSchedule","key":"management","operator":"Equal","value":"true"}],"volumes":[{"configMap":{"defaultMode":420,"name":"monitoring-grafana-config"},"name":"config"},{"name":"storage","persistentVolumeClaim":{"claimName":"grafana-data"}},{"configMap":{"defaultMode":420,"name":"monitoring-grafana-dashboard-system"},"name":"dashboard-system-volume"},{"configMap":{"defaultMode":420,"name":"monitoring-grafana-dashboard-cluster"},"name":"dashboard-cluster-volume"},{"configMap":{"defaultMode":420,"name":"monitoring-grafana-dashboard-container"},"name":"dashboard-container-volume"},{"configMap":{"defaultMode":420,"name":"monitoring-grafana-dashboard-addon"},"name":"dashboard-addon-volume"},{"configMap":{"defaultMode":420,"name":"monitoring-grafana-config-provisioning"},"name":"config-volume-provisioning"},{"configMap":{"defaultMode":420,"name":"monitoring-grafana-config-provisioning-prometheus"},"name":"config-volume-provisioning-prometheus"}]}}}}
+  creationTimestamp: 2020-03-02T02:17:59Z
+  generation: 24
+  labels:
+    component: grafana
+  name: grafana-deployment
+  namespace: zcp-system
+  resourceVersion: "118273400"
+  selfLink: /apis/extensions/v1beta1/namespaces/zcp-system/deployments/grafana-deployment
+  uid: e4d21166-e120-4d72-8af1-4e18c62aede4
+spec:
+  progressDeadlineSeconds: 2147483647
+  replicas: 1
+  revisionHistoryLimit: 2147483647
+  selector:
+    matchLabels:
+      component: grafana
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        component: grafana
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: beta.kubernetes.io/arch
+                operator: In
+                values:
+                - amd64
+              - key: node-role.kubernetes.io/management
+                operator: Exists
+      containers:
+      - env:
+        - name: GF_SECURITY_ADMIN_USER
+          value: admin
+        - name: GF_SECURITY_ADMIN_PASSWORD
+          value: admin
+        - name: GF_SERVER_DOMAIN
+          valueFrom:
+            configMapKeyRef:
+              key: GF_SERVER_DOMAIN
+              name: monitoring-grafana-config
+        - name: GF_AUTH_GENERIC_OAUTH_AUTH_URL
+          valueFrom:
+            configMapKeyRef:
+              key: GF_AUTH_GENERIC_OAUTH_AUTH_URL
+              name: monitoring-grafana-config
+        image: au.icr.io/cloudzcp/grafana:6.7.0
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /api/health
+            port: 3000
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 30
+        name: grafana
+        ports:
+        - containerPort: 3000
+          name: grafana
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /api/health
+            port: 3000
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 30
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /var/lib/grafana
+          name: storage
+        - mountPath: /etc/grafana
+          name: config
+        - mountPath: /var/lib/grafana/dashboards/system
+          name: dashboard-system-volume
+        - mountPath: /var/lib/grafana/dashboards/cluster
+          name: dashboard-cluster-volume
+        - mountPath: /var/lib/grafana/dashboards/container
+          name: dashboard-container-volume
+        - mountPath: /var/lib/grafana/dashboards/addon
+          name: dashboard-addon-volume
+        - mountPath: /etc/grafana/provisioning/dashboards
+          name: config-volume-provisioning
+        - mountPath: /etc/grafana/provisioning/datasources
+          name: config-volume-provisioning-prometheus
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: 472
+        runAsUser: 472
+      terminationGracePeriodSeconds: 30
+      tolerations:
+      - effect: NoSchedule
+        key: management
+        operator: Equal
+        value: "true"
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: monitoring-grafana-config
+        name: config
+      - name: storage
+        persistentVolumeClaim:
+          claimName: grafana-data
+      - configMap:
+          defaultMode: 420
+          name: monitoring-grafana-dashboard-system
+        name: dashboard-system-volume
+      - configMap:
+          defaultMode: 420
+          name: monitoring-grafana-dashboard-cluster
+        name: dashboard-cluster-volume
+      - configMap:
+          defaultMode: 420
+          name: monitoring-grafana-dashboard-container
+        name: dashboard-container-volume
+      - configMap:
+          defaultMode: 420
+          name: monitoring-grafana-dashboard-addon
+        name: dashboard-addon-volume
+      - configMap:
+          defaultMode: 420
+          name: monitoring-grafana-config-provisioning
+        name: config-volume-provisioning
+      - configMap:
+          defaultMode: 420
+          name: monitoring-grafana-config-provisioning-prometheus
+        name: config-volume-provisioning-prometheus
+status:
+  availableReplicas: 1
+  conditions:
+  - lastTransitionTime: 2020-03-02T02:17:59Z
+    lastUpdateTime: 2020-03-02T02:17:59Z
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  observedGeneration: 24
+  readyReplicas: 1
+  replicas: 1
+  updatedReplicas: 1

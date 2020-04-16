@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: message-pattern
+spec:
+  selector:
+    matchLabels:
+      app: message-pattern
+  template:
+    metadata:
+      labels:
+        app: message-pattern
+    spec:
+      containers:
+      - name: message-pattern
+        # actuator가 포함된 임의의 컨테이너
+        image: quay.io/dawildone/spring-boot-message-pattern
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8081
+        envFrom:
+          - configMapRef:
+              name: message-pattern-kv-config
+        volumeMounts:
+          # 절대경로이다
+          - mountPath: /config
+            name: message-pattern-config-volume
+            readOnly: true
+      volumes:
+        - name: message-pattern-config-volume
+          configMap:
+            name: message-pattern-config
+            items:
+              - key: application.yaml
+                path: application.yaml
+              - key: application-overlay.yaml
+                # 최종적으로 /config/overlay/application.yaml 에 위치
+                # 이 property를 참조하기 위한 설정은 base/kustomization.yaml에 있다.
+                path: overlay/application.yaml

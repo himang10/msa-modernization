@@ -1,0 +1,27 @@
+bases:
+  - ../../../deploy-config/base
+  - ../../../deploy-config/pattern/config/dev
+namePrefix: modern-template-
+nameSuffix: -v0-dev
+# 모든 overlay kustomization 에 적용된 공통 라벨 적용
+commonLabels:
+  biz: spring-modern-template
+  app: modern-template        
+# deployment에 선언된 이미지 name 치환
+images:     
+  - name: cloudsvcdev/microservice
+    newName: cloudsvcdev/spring-modern-template
+    newTag: v0
+# ConfigMap 생성 정보
+configMapGenerator:
+  - name: app-config
+    behavior: merge
+    files:
+      - application-overlay.yaml
+# 패치 대상 파일 목록
+patchesStrategicMerge:
+  - replicas-patch.yaml
+  - probe-patch.yaml
+  - serviceport-patch.yaml
+  - spec-patch.yaml
+  - metric-patch.yaml

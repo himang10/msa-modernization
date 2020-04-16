@@ -1,0 +1,84 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1","kind":"DaemonSet","metadata":{"annotations":{},"labels":{"app":"prometheus","component":"node-exporter"},"name":"node-exporter","namespace":"zcp-system"},"spec":{"selector":{"matchLabels":{"app":"prometheus","component":"node-exporter"}},"template":{"metadata":{"labels":{"app":"prometheus","component":"node-exporter"},"name":"node-exporter"},"spec":{"containers":[{"args":["--path.procfs=/host/proc","--path.sysfs=/host/sys","--web.listen-address=0.0.0.0:9100"],"image":"registry.au-syd.bluemix.net/cloudzcp/node-exporter:v0.15.2","name":"node-exporter","ports":[{"containerPort":9100,"hostPort":9100,"name":"metrics"}],"volumeMounts":[{"mountPath":"/host/proc","name":"proc","readOnly":true},{"mountPath":"/host/sys","name":"sys","readOnly":true}]}],"hostNetwork":true,"hostPID":true,"tolerations":[{"operator":"Exists"}],"volumes":[{"hostPath":{"path":"/proc"},"name":"proc"},{"hostPath":{"path":"/sys"},"name":"sys"}]}},"updateStrategy":{"rollingUpdate":{"maxUnavailable":1},"type":"RollingUpdate"}}}
+  creationTimestamp: 2019-04-10T03:03:14Z
+  generation: 11
+  labels:
+    app: prometheus
+    component: node-exporter
+  name: node-exporter
+  namespace: zcp-system
+  resourceVersion: "122915694"
+  selfLink: /apis/extensions/v1beta1/namespaces/zcp-system/daemonsets/node-exporter
+  uid: 2eba2d44-5b3d-11e9-a71f-5a0786bf4a7a
+spec:
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: prometheus
+      component: node-exporter
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: prometheus
+        component: node-exporter
+      name: node-exporter
+    spec:
+      containers:
+      - args:
+        - --path.procfs=/host/proc
+        - --path.sysfs=/host/sys
+        - --web.listen-address=0.0.0.0:9100
+        image: au.icr.io/cloudzcp/node-exporter:v0.18.1
+        imagePullPolicy: IfNotPresent
+        name: node-exporter
+        ports:
+        - containerPort: 9100
+          hostPort: 9100
+          name: metrics
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /host/proc
+          name: proc
+          readOnly: true
+        - mountPath: /host/sys
+          name: sys
+          readOnly: true
+      dnsPolicy: ClusterFirst
+      hostNetwork: true
+      hostPID: true
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      tolerations:
+      - operator: Exists
+      volumes:
+      - hostPath:
+          path: /proc
+          type: ""
+        name: proc
+      - hostPath:
+          path: /sys
+          type: ""
+        name: sys
+  templateGeneration: 10
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
+status:
+  currentNumberScheduled: 13
+  desiredNumberScheduled: 13
+  numberAvailable: 13
+  numberMisscheduled: 0
+  numberReady: 13
+  observedGeneration: 11
+  updatedNumberScheduled: 13

@@ -1,0 +1,6 @@
+// # Auto Configuration Sample
+// org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.skcc.modern.pattern.patternconfiguration.config.PatternConfiguration
+
+# EnvironmentPostProcessor
+// org.springframework.boot.env.EnvironmentPostProcessor=com.skcc.modern.pattern.patternconfiguration.config.SampleEnvironmentPostProcessor
+org.springframework.boot.env.EnvironmentPostProcessor=com.skcc.modern.pattern.patternconfiguration.config.PatternEnvironmentPostProcessor

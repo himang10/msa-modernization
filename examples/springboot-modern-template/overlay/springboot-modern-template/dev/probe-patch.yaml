@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  # base와 동일하게 명시해서 patch시 어떤 deployment에 대한 수정인지 kustomize가 인식
+  name: app
+spec:
+  template:
+    spec:
+      containers:
+        # spec.containers[] 에서는 name이 key다. name: microservice 를 명시해서 어레이를 수정
+        - name: microservice
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 20
+          ports:
+            - containerPort: 8080
+            - $patch: replace # 어레이 전체를 이것으로 바꿈.
+            # patch위한 directive없이 작성하면 기존 8080에 이어 
+            # 8280이 어레이에 추가가 된다.

@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: circuitbreaker-resilience4j
+  labels:
+    app: circuitbreaker-resilience4j
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: circuitbreaker-resilience4j
+  template:
+    metadata:
+      labels:
+        app: circuitbreaker-resilience4j
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/path: '/actuator/prometheus'
+        prometheus.io/port: '8080'
+    spec:
+      containers:
+      - name: circuitbreaker-resilience4j
+        image: zzonsang2/circuitbreaker-resilience4j:0.0.1
+        ports:
+        - containerPort: 8080
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: 128Mi            
+          limits:
+            memory: 512Mi 
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 20

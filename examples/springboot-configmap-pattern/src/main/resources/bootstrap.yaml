@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: springboot-configmap-pattern
+  cloud:
+    kubernetes:
+      reload:
+        enabled: true
+        mode: event    # event, polling
+        period: 5000
+        strategy: refresh # refresh, restart_context, shutdown
+      config:
+        name: springboot-configmap-pattern
+        namespace: default
+

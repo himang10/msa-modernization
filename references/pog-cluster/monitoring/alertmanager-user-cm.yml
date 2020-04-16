@@ -1,0 +1,27 @@
+apiVersion: v1
+data:
+  config.yml: "global: \n   resolve_timeout: 5m\n   smtp_smarthost: smtp.sendgrid.net:587\n
+    \  smtp_from: alertmanager@zcp.com\n   smtp_auth_username: foo@bar.com\n   smtp_auth_password:
+    barfoo\n   smtp_auth_secret: foobar\n   smtp_require_tls: true\n   slack_api_url:
+    https://global.slack_api_url\n   hipchat_auth_token: '1234556789'\n   hipchat_api_url:
+    https://hipchat.foobar.org/\ntemplates: \n- /etc/alertmanager-templates/*.tmpl\nroute:
+    \n   group_by: \n   - alertname\n   - severity\n   - receiver\n   - priority\n
+    \  - env\n   - product\n   group_wait: 30s\n   group_interval: 5m\n   repeat_interval:
+    60m\n   receiver: default\n   routes: \n   -  receiver: default\n      continue:
+    true\n   -  receiver: zcp-alert-aggregator\n      match: \n         channel: zcp-alert-aggregator\n
+    \  -  receiver: abd1355\n      match: \n         channel: abd1355\nreceivers:
+    \n-  name: default\n   webhook_configs: \n   -  url: http://zcp-alertmanager-store-svc:5000/webhook\n
+    \     send_resolved: true\n-  name: zcp-alert-aggregator\n   webhook_configs:
+    \n   -  url: https://alert.cloudzcp.io/webhook/alertmanager\n      send_resolved:
+    true\n-  name: abd1355\n"
+kind: ConfigMap
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","data":{"config.yml":"global:\n  # ResolveTimeout is the time after which an alert is declared resolved\n  # if it has not been updated.\n  resolve_timeout: 5m\n\n  # The smarthost and SMTP sender used for mail notifications.\n  smtp_smarthost: 'smtp.sendgrid.net:587'\n  smtp_from: 'alertmanager@zcp.com'\n  smtp_auth_username: 'foo@bar.com'\n  smtp_auth_password: 'barfoo'\n  smtp_auth_secret: 'foobar'\n  smtp_require_tls: true\n\n  slack_api_url: 'https://global.slack_api_url'\n  hipchat_auth_token: '1234556789'\n  hipchat_api_url: 'https://hipchat.foobar.org/'\n\n# # The directory from which notification templates are read.\ntemplates:\n- '/etc/alertmanager-templates/*.tmpl'\n\n# The root route on which each incoming alert enters.\nroute:\n\n  # The labels by which incoming alerts are grouped together. For example,\n  # multiple alerts coming in for cluster=A and alertname=LatencyHigh would\n  # be batched into a single group.\n\n  group_by: ['alertname', 'severity', 'receiver', 'priority', 'env', 'product']\n\n  # When a new group of alerts is created by an incoming alert, wait at\n  # least 'group_wait' to send the initial notification.\n  # This way ensures that you get multiple alerts for the same group that start\n  # firing shortly after another are batched together on the first\n  # notification.\n\n  group_wait: 30s\n\n  # When the first notification was sent, wait 'group_interval' to send a batch\n  # of new alerts that started firing for that group.\n\n  group_interval: 5m\n\n  # If an alert has successfully been sent, wait 'repeat_interval' to\n  # resend them.\n\n  repeat_interval: 60m\n\n  # A default receiver\n\n  # If an alert isn't caught by a route, send it to default.\n  receiver: default\n\n  # All the above attributes are inherited by all child routes and can\n  # overwritten on each.\n\n  # The child route trees.\n  routes:\n  - receiver: default\n    continue: true\n\nreceivers:\n- name: 'default'\n  webhook_configs:\n  - url: http://zcp-alertmanager-store-svc:5000/webhook\n    send_resolved: true"},"kind":"ConfigMap","metadata":{"annotations":{},"name":"alertmanager-user","namespace":"zcp-system"}}
+  creationTimestamp: 2019-05-23T00:52:53Z
+  name: alertmanager-user
+  namespace: zcp-system
+  resourceVersion: "112674757"
+  selfLink: /api/v1/namespaces/zcp-system/configmaps/alertmanager-user
+  uid: 18781747-7cf5-11e9-882a-9a8724ad4230
